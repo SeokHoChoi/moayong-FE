@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 import animate from "tailwindcss-animate";
 import type { PluginAPI } from "tailwindcss/types/config";
+import scrollbarHide from "tailwind-scrollbar-hide";
 
 export default {
   darkMode: ["class"],
@@ -72,6 +73,7 @@ export default {
   },
   plugins: [
     animate,
+    scrollbarHide,
     function ({ addComponents }: PluginAPI) {
       addComponents({
         // Heading Styles
@@ -185,7 +187,6 @@ export default {
           letterSpacing: "0",
           fontWeight: "500",
         },
-
 
         /* ✅ md(768px) 이상에서 데스크톱 스타일 적용 */
         "@media (min-width: 768px)": {

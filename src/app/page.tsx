@@ -44,7 +44,7 @@ export default function Home() {
             subTitle="출석체크 확인하기"
             icon={<CalendarIcon />}
             className="flex-1"
-            onClick={() => router.push('/attendance')}
+            onClick={() => router.push("/attendance")}
           />
           <CardButton
             title={`오늘의 금융지식이\n도착했어요!`}
