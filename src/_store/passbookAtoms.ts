@@ -44,7 +44,7 @@ export const formattedTransactionDateAtom = atom((get) => {
 });
 
 // 업데이트를 위한 원자 (쓰기 가능)
-export const updatePassbookDataAtom = atom(
+export const updatePassbookDataAtom: any = atom(
   null,
   (get, set, data: { imageDataURL: string; ocrResult: any; isVerified: boolean }) => {
     const { imageDataURL, ocrResult, isVerified } = data;
