@@ -48,8 +48,8 @@ export const updatePassbookDataAtom: any = atom(
   null,
   (get, set, data: { imageDataURL: string; ocrResult: any; isVerified: boolean }) => {
     const { imageDataURL, ocrResult, isVerified } = data;
-    set(selectedImageAtom, imageDataURL);
-    set(ocrResultAtom, {
+    set(selectedImageAtom as any, imageDataURL);
+    set(ocrResultAtom as any, {
       accountNumber: ocrResult.accountNumber,
       bankBalance: ocrResult.bankBalance,
       transactionDate: ocrResult.transactionDate || '',

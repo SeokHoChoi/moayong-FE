@@ -24,7 +24,7 @@ const mockApiRequest: any = async () => {
 
 const ScreenPage = () => {
   const [open, setOpen] = useState(false);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false); // 성공 팝업 상태
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [editData, setEditData] = useState({
     transactionDate: '',
     transactionAmount: '',
@@ -51,7 +51,7 @@ const ScreenPage = () => {
   };
 
   const handleUpdateAccount = () => {
-    setOcrResult((prev) => {
+    (setOcrResult as any)((prev) => {
       if (!prev) return prev;
       return {
         ...prev,
@@ -76,7 +76,7 @@ const ScreenPage = () => {
 
   const handleCloseSuccessPopup = () => {
     setShowSuccessPopup(false);
-    // 여기에 인증 내역 확인 페이지로 이동하는 로직을 추가할 수 있습니다.
+    // 여기에 인증 내역 확인 페이지로 이동하는 로직을 추가
   }
 
   return (

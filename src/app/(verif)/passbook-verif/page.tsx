@@ -16,7 +16,7 @@ import x from 'src/assets/icon-x.svg'
 
 const PassbookVerifiPage = () => {
   const router = useRouter();
-  const [selectedImage, setSelectedImage] = useAtom(selectedImageAtom);
+  const [selectedImage, setSelectedImage] = useAtom(selectedImageAtom as any);
   const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
   const [, updatePassbookData] = useAtom(updatePassbookDataAtom);
 
@@ -94,7 +94,7 @@ const PassbookVerifiPage = () => {
       <div className="bg-gray-5 border border-gray-20 rounded-[16px] w-[320px] h-[280px] flex flex-col items-center justify-center mx-[20px]">
         {selectedImage ? (
           <Image
-            src={selectedImage}
+            src={selectedImage as any}
             alt="Uploaded Passbook"
             width={320}
             height={280}

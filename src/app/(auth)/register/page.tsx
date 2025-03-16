@@ -14,6 +14,14 @@ import backbar from 'src/assets/appbar.svg'
 import x from 'src/assets/icon-x.svg'
 import AccountVerification from 'src/_components/register/AccountVerification';
 import PassbookVerification from 'src/_components/register/PassbookVerification';
+import SuccessPopup from 'src/_components/SuccessPopup';
+
+const mockApiRequest: any = async () => {
+  // 목데이터 응답
+  return new Promise((resolve) =>
+    setTimeout(() => resolve({ success: true }), 1000)
+  );
+};
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -28,6 +36,24 @@ const RegisterPage = () => {
   const [accountNumber, setAccountNumber] = useState('');
   const [isGoingBack, setIsGoingBack] = useState(false);
   const [ocrAccountNumber, setOcrAccountNumber] = useState('');
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+
+  const handleCloseSuccessPopup = () => {
+    setShowSuccessPopup(false);
+    handleCompleteRegistration();
+    // 여기에 인증 내역 확인 페이지로 이동하는 로직을 추가
+  }
+
+  const handleCompleteCertification = async () => {
+    try {
+      const response = await mockApiRequest(); // 목 API 요청
+      if (response.success) {
+        setShowSuccessPopup(true); // 성공 팝업 표시
+      }
+    } catch (error) {
+      console.error('API 요청 실패:', error);
+    }
+  };
 
   const handleNextSlide = (key: any, value: any) => {
     setInputValues((prevValues: any) => ({
@@ -119,9 +145,9 @@ const RegisterPage = () => {
 
   const handleRegistrationComplete = () => {
     // 가입 완료 후 처리할 로직 (예: 팝업 표시, 페이지 이동)
-    alert("가입이 완료되었습니다!");
-    handleCompleteRegistration() // 완료 팝업에서 누르면 실행됨
-    router.push('/'); // 완료 후 루트 페이지로 이동
+    handleCompleteCertification();
+    // handleCompleteRegistration() // 완료 팝업에서 누르면 실행됨
+    // router.push('/'); // 완료 후 루트 페이지로 이동
   };
 
   useEffect(() => {
@@ -655,6 +681,11 @@ const RegisterPage = () => {
       </div>
 
       {renderSlideContent()}
+
+      {/* 성공 팝업 */}
+      {showSuccessPopup && (
+        <SuccessPopup onClose={handleCloseSuccessPopup} name={'도롱이'} />
+      )}
     </div>
   );
 };

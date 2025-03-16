@@ -6,13 +6,16 @@ import { useRouter } from 'next/navigation';
 
 interface SuccessPopupProps {
   onClose: () => void;
+  name?: string;
 }
 
-const SuccessPopup: React.FC<SuccessPopupProps> = ({ onClose }) => {
+const SuccessPopup: React.FC<SuccessPopupProps> = ({ onClose, name }) => {
   const router = useRouter();
   const handleSuccessPopup = () => {
     onClose();
-    router.push('/verif')
+    if (!name) {
+      router.push('/verif')
+    }
   }
 
   return (
@@ -26,14 +29,16 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({ onClose }) => {
             className="object-cover"
           />
         </div>
-        <p className="title-md text-gray-80 text-center mb-4">저축인증이 완료되었습니다!</p>
+        <p className="title-md text-gray-80 text-center mb-4">
+          {name ? `${name}님, 환영합니다!` : '저축인증이 완료되었습니다!'}
+        </p>
         <p className="body-md text-gray-80 text-center mb-6">
-          오늘 1,345명의 사람들이
+          {name ? '모아용에서' : '오늘 1,345명의 사람들이'}
           <br></br>
-          저축인증을 했어요!
+          {name ? '재미있는 저축 습관을 길러봐요!' : '저축인증을 했어요!'}
         </p>
         <Button size="medium" onClick={handleSuccessPopup}>
-          인증내역 확인하기
+          {name ? '홈으로 가기' : '인증내역 확인하기'}
         </Button>
       </div>
     </div>
