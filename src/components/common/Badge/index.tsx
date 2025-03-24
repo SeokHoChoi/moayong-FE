@@ -2,21 +2,23 @@ import { cn } from "src/lib/utils";
 
 interface BadgeProps {
   children: React.ReactNode;
-  variant: "primary" | "gray" | "purpleBg" | "purpleText" | "orangeBg" | "orangeText";
+  variant: "greenBg" | "greenText" | "purpleBg" | "purpleText" | "orangeBg" | "orangeText";
+  isGrayBg?: boolean;
 }
 
-export const Badge = ({ children, variant }: BadgeProps) => {
+export const Badge = ({ children, variant, isGrayBg }: BadgeProps) => {
   const bgStyle = {
-    primary: "bg-green-50",
-    gray: "bg-gray-5",
+    greenBg: "bg-green-50",
+    greenText: "bg-white",
     purpleBg: "bg-purple-30",
     purpleText: "bg-white",
     orangeBg: "bg-[#EC664F]",
     orangeText: "bg-white",
+    grayBg: "bg-gray-5",
   };
   const textStyle = {
-    primary: "text-white",
-    gray: "text-green-50",
+    greenBg: "text-white",
+    greenText: "text-green-60",
     purpleBg: "text-white",
     purpleText: "text-purple-40",
     orangeBg: "text-white",
@@ -24,7 +26,7 @@ export const Badge = ({ children, variant }: BadgeProps) => {
   };
 
   return (
-    <div className={cn("rounded-[4px] w-fit", bgStyle[variant])}>
+    <div className={cn("rounded-[4px] w-fit", bgStyle[variant], isGrayBg && "bg-gray-5")}>
       <div className={cn(textStyle[variant], "caption-sm py-1 px-1.5")}>{children}</div>
     </div>
   );

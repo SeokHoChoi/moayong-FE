@@ -1,18 +1,22 @@
-'use client';
+"use client";
 
 import AttendanceCalendar from "src/_components/AttendanceCalendar";
 import React, { useCallback, useEffect, useState } from "react";
 import Button from "src/_components/Button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import backbar from 'src/assets/appbar.svg'
-import megaphone from 'src/assets/images/icon-megaphone.png'
-import fire from 'src/assets/images/icon-fire.png'
-import calendar from 'src/assets/images/icon-calendar.png'
-import deco from 'src/assets/images/icon-deco.png'
-import { fetchAttendance, postAttendance } from "src/_api/attendance";
+import backbar from "src/assets/appbar.svg";
+import megaphone from "src/assets/images/icon-megaphone.png";
+import fire from "src/assets/images/icon-fire.png";
+import calendar from "src/assets/images/icon-calendar.png";
+import deco from "src/assets/images/icon-deco.png";
 
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getAttendanceToday, getConsecutiveAttendance, postAttendance } from "src/_api/api";
+import { AxiosError } from "axios";
+import { useAuth } from "src/_hooks/auth";
 const AttendancePage = () => {
+  const { user } = useAuth();
   const router = useRouter();
   const [attendanceDates, setAttendanceDates] = useState<Date[]>([
     new Date(2025, 4, 5),
@@ -24,22 +28,57 @@ const AttendancePage = () => {
   const [showPopup, setShowPopup] = useState<boolean>(false);
 
   // 출석 정보 가져오기 (초기 로드)
+  const { data: consecutiveAttendance, refetch: refetchConsecutiveAttendance } = useQuery({
+    queryKey: ["consecutiveAttendance"],
+    queryFn: () => getConsecutiveAttendance(user?.id),
+    enabled: !!user,
+  });
+
+  const { data: attendanceToday, refetch: refetchAttendanceToday } = useQuery({
+    queryKey: ["attendanceToday"],
+    queryFn: () => getAttendanceToday(user?.id),
+    enabled: !!user,
+  });
+
   useEffect(() => {
-    fetchAttendance().then((data: any) => {
-      setAttendanceDates(data.dates);
-      setIsChecked(data.isChecked);
-    });
-  }, []);
+    if (attendanceToday) {
+      setIsChecked(attendanceToday.attended);
+    }
+  }, [attendanceToday]);
 
-  // 출석 체크 버튼 핸들러
-  const handleAttendanceCheck = useCallback(() => {
-    if (isChecked) return;
+  // 출석체크 postAttendance
+  const {
+    mutate: mutatePostAttendance,
+    isSuccess: isSuccessPostAttendance,
+    isError: isErrorPostAttendance,
+    error: errorPostAttendance,
+  } = useMutation({
+    mutationFn: () => postAttendance(user?.id),
+  });
 
-    postAttendance().then(() => {
+  useEffect(() => {
+    if (isSuccessPostAttendance) {
       setShowPopup(true);
       setAttendanceDates((prev) => [...prev, new Date()]);
-    });
-  }, [isChecked]);
+    }
+
+    if (isErrorPostAttendance) {
+      const error = errorPostAttendance as AxiosError<{ code: string }>;
+      const errorCode = error.response?.data?.code;
+
+      if (error.response?.status === 409 && errorCode === "ALREADY_ATTENDED_TODAY") {
+        setShowPopup(true);
+      }
+    }
+  }, [isSuccessPostAttendance, isErrorPostAttendance]);
+  // 출석 체크 버튼 핸들러
+  const handleAttendanceCheck = async () => {
+    if (isChecked) return;
+
+    await mutatePostAttendance();
+    refetchConsecutiveAttendance();
+    refetchAttendanceToday();
+  };
 
   // 팝업 닫을 때 출석 체크 확정
   const handleClosePopup = () => {
@@ -49,13 +88,11 @@ const AttendancePage = () => {
 
   return (
     <div className="flex flex-col items-center h-screen">
-      <div className='h-[50px] w-full flex items-center pl-[9px]'>
-        <button
-          onClick={() => router.push('/')}
-          className='z-10'>
+      <div className="h-[50px] w-full flex items-center pl-[9px]">
+        <button onClick={() => router.push("/")} className="z-10">
           <Image src={backbar} alt="" />
         </button>
-        <p className='title-sm text-gray-80 text-center w-full ml-[-36px]'>출석체크</p>
+        <p className="title-sm text-gray-80 text-center w-full ml-[-36px]">출석체크</p>
       </div>
       {/* Header */}
       <div className="w-[320px] mb-[14px] caption-md py-[18px] px-[14px] bg-gray-10 rounded-[14px] text-gray-90 flex items-center gap-[10px]">
@@ -70,7 +107,9 @@ const AttendancePage = () => {
             <Image src={calendar} alt="" />
             <div className="flex flex-col items-start">
               <div className="text-gray-60 caption-md">연속 출석일</div>
-              <div className="text-gray-70 title-lg">18일</div>
+              <div className="text-gray-70 title-lg">
+                {consecutiveAttendance?.currentConsecutiveDate || 0}일
+              </div>
             </div>
           </div>
         </div>
@@ -79,7 +118,9 @@ const AttendancePage = () => {
             <Image src={fire} alt="" />
             <div className="flex flex-col items-start">
               <div className="text-gray-60 caption-md">최대 연속 출석일</div>
-              <div className="text-danger title-lg">53일</div>
+              <div className="text-danger title-lg">
+                {consecutiveAttendance?.maxConsecutiveDate || 0}일
+              </div>
             </div>
           </div>
         </div>
@@ -123,4 +164,3 @@ const AttendancePage = () => {
 };
 
 export default AttendancePage;
-

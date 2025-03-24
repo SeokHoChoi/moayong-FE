@@ -14,7 +14,7 @@ export const ExclamationMark = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g id="icon/16" clip-path="url(#clip0_4010_1729)">
+      <g id="icon/16" clipPath="url(#clip0_4010_1729)">
         <circle id="Ellipse 178" cx="8" cy="8" r="8" fill="#F6C959" />
         <path
           id="!"

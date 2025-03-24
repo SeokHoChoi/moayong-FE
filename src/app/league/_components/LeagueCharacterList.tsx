@@ -18,10 +18,10 @@ const levelCharacters: {
 }[] = [
   // { level: 1, image: Level1Img, name: "알" },
   { level: 1, image: Level2Img, name: "알" },
-  { level: 2, image: Level3Img, name: "아기용" },
-  { level: 3, image: Level4Img, name: "용4" },
-  { level: 4, image: Level5Img, name: "용5" },
-  { level: 5, image: Level6Img, name: "용6", className: "w-[105px] h-[180px]" },
+  { level: 2, image: Level3Img, name: "어린이용" },
+  { level: 3, image: Level4Img, name: "중딩용" },
+  { level: 4, image: Level5Img, name: "고딩용" },
+  { level: 5, image: Level6Img, name: "대딩용", className: "w-[105px] h-[180px]" },
 ];
 
 export const LeagueCharacterList = ({

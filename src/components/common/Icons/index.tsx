@@ -3,3 +3,8 @@ export { Calendar as CalendarIcon } from "./Calendar";
 export { Bulb as BulbIcon } from "./Bulb";
 export { Logo as LogoIcon } from "./Logo";
 export { ExclamationMark as ExclamationMarkIcon } from "./ExclamationMark";
+export { Flame as FlameIcon } from "./Flame";
+export { Medal as MedalIcon } from "./Medal";
+export { Google as GoogleIcon } from "./Google";
+export { Kakao as KakaoIcon } from "./Kakao";
+export { Naver as NaverIcon } from "./Naver";

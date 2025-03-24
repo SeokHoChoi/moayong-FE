@@ -194,7 +194,7 @@ export default {
           ".heading-md": { fontSize: "40px", lineHeight: "120%" },
           ".heading-sm": { fontSize: "32px", lineHeight: "130%" },
           ".title-xl": { fontSize: "32px", lineHeight: "130%" },
-          ".title-lg": { fontSize: "28px", lineHeight: "130%" },
+          ".title-lg": { fontSize: "22px", lineHeight: "130%" },
           ".title-md": { fontSize: "24px", lineHeight: "130%" },
           ".title-sm": { fontSize: "18px", lineHeight: "140%" },
           ".title-xs": { fontSize: "16px", lineHeight: "140%" },
