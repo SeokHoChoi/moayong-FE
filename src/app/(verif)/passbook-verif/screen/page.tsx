@@ -1,34 +1,28 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from 'src/components/ui/button';
-import { Input } from 'src/components/ui/input';
-import { Sheet, SheetContent, SheetTrigger } from 'src/components/ui/sheet';
-import Image from 'next/image';
-import { useAtom } from 'jotai';
-import {
-  selectedImageAtom,
-  accountNumberAtom,
-  ocrResultAtom,
-} from 'src/_store/passbookAtoms';
-import SuccessPopup from 'src/_components/SuccessPopup';
-import x from 'src/assets/icon-x.svg'
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { Button } from "src/components/ui/button";
+import { Input } from "src/components/ui/input";
+import { Sheet, SheetContent, SheetTrigger } from "src/components/ui/sheet";
+import Image from "next/image";
+import { useAtom } from "jotai";
+import { selectedImageAtom, accountNumberAtom, ocrResultAtom } from "src/_store/passbookAtoms";
+import SuccessPopup from "src/_components/SuccessPopup";
+import x from "src/assets/icon-x.svg";
+import { useRouter } from "next/navigation";
 
 const mockApiRequest: any = async () => {
   // 목데이터 응답
-  return new Promise((resolve) =>
-    setTimeout(() => resolve({ success: true }), 1000)
-  );
+  return new Promise((resolve) => setTimeout(() => resolve({ success: true }), 1000));
 };
 
 const ScreenPage = () => {
   const [open, setOpen] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [editData, setEditData] = useState({
-    transactionDate: '',
-    transactionAmount: '',
-    senderName: '',
+    transactionDate: "",
+    transactionAmount: "",
+    senderName: "",
   });
   const router = useRouter();
 
@@ -51,12 +45,12 @@ const ScreenPage = () => {
   };
 
   const handleUpdateAccount = () => {
-    (setOcrResult as any)((prev) => {
+    (setOcrResult as any)((prev: any) => {
       if (!prev) return prev;
       return {
         ...prev,
-        transactionDate: editData.transactionDate || '',
-        transactionAmount: editData.transactionAmount || '',
+        transactionDate: editData.transactionDate || "",
+        transactionAmount: editData.transactionAmount || "",
         senderName: editData.senderName,
       };
     });
@@ -70,23 +64,23 @@ const ScreenPage = () => {
         setShowSuccessPopup(true); // 성공 팝업 표시
       }
     } catch (error) {
-      console.error('API 요청 실패:', error);
+      console.error("API 요청 실패:", error);
     }
   };
 
   const handleCloseSuccessPopup = () => {
     setShowSuccessPopup(false);
     // 여기에 인증 내역 확인 페이지로 이동하는 로직을 추가
-  }
+  };
 
   return (
     <div>
       <div className="w-full">
-        <div className='h-[50px] py-[5px] w-full flex items-center pl-[9px] bg-gray-0 mb-4'>
-          <button onClick={() => router.push('/verif')} className='z-10'>
+        <div className="h-[50px] py-[5px] w-full flex items-center pl-[9px] bg-gray-0 mb-4">
+          <button onClick={() => router.push("/verif")} className="z-10">
             <Image src={x} alt="" />
           </button>
-          <p className='title-sm text-gray-80 text-center w-full ml-[-36px]'>저축 인증하기</p>
+          <p className="title-sm text-gray-80 text-center w-full ml-[-36px]">저축 인증하기</p>
         </div>
         {selectedImage && (
           <div className="flex justify-center relative">
@@ -97,20 +91,20 @@ const ScreenPage = () => {
               height={240}
               className="rounded-[16px] w-[320px] h-[280px] object-cover mb-[24px] shadow-lg"
               style={{
-                objectPosition: '50% 15%',
-                boxShadow: '0 0px 1px #CDD1D5, 0 4px 2px #CDD1D5',
+                objectPosition: "50% 15%",
+                boxShadow: "0 0px 1px #CDD1D5, 0 4px 2px #CDD1D5",
               }}
             />
             {ocrResult?.highlightBoxes?.map((box, index) => (
               <div
                 key={index}
                 style={{
-                  position: 'absolute',
+                  position: "absolute",
                   top: box.y,
                   left: box.x,
                   width: box.width,
                   height: box.height,
-                  border: '2px solid red',
+                  border: "2px solid red",
                 }}
               />
             ))}
@@ -182,7 +176,7 @@ const ScreenPage = () => {
                         <Input
                           type="text"
                           value={editData.transactionDate}
-                          onChange={(e) => handleChange('transactionDate', e.target.value)}
+                          onChange={(e) => handleChange("transactionDate", e.target.value)}
                           className="pb-[12px] border-b border-[#B1B8BE] border-x-transparent border-t-transparent shadow-none rounded-none title-md text-gray-50 pl-0 py-4"
                         />
                       </div>
@@ -192,7 +186,7 @@ const ScreenPage = () => {
                         <Input
                           type="text"
                           value={editData.transactionAmount}
-                          onChange={(e) => handleChange('transactionAmount', e.target.value)}
+                          onChange={(e) => handleChange("transactionAmount", e.target.value)}
                           className="pb-[12px] border-b border-[#B1B8BE] border-x-transparent border-t-transparent shadow-none rounded-none title-md text-gray-50 pl-0 py-4"
                         />
                       </div>
@@ -202,7 +196,7 @@ const ScreenPage = () => {
                         <Input
                           type="text"
                           value={editData.senderName}
-                          onChange={(e) => handleChange('senderName', e.target.value)}
+                          onChange={(e) => handleChange("senderName", e.target.value)}
                           className="pb-[12px] border-b border-[#B1B8BE] border-x-transparent border-t-transparent shadow-none rounded-none title-md text-gray-50 pl-0 py-4"
                         />
                       </div>
@@ -226,9 +220,7 @@ const ScreenPage = () => {
         </div>
 
         {/* 성공 팝업 */}
-        {showSuccessPopup && (
-          <SuccessPopup onClose={handleCloseSuccessPopup} />
-        )}
+        {showSuccessPopup && <SuccessPopup onClose={handleCloseSuccessPopup} />}
       </div>
     </div>
   );
