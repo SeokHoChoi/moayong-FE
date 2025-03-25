@@ -1,95 +1,74 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import upload from 'src/assets/images/upload.png';
-import sample from 'src/assets/images/sample-img.png';
-import press from 'src/assets/images/press.png';
-import check from 'src/assets/icon-check.svg';
-import { useRouter } from 'next/navigation';
-import { useAtom } from 'jotai';
-import {
-  selectedImageAtom,
-  isLoadingAtom,
-  updatePassbookDataAtom,
-} from 'src/_store/passbookAtoms';
-import x from 'src/assets/icon-x.svg'
+import Image from "next/image";
+import upload from "src/assets/images/upload.png";
+import sample from "src/assets/images/sample-img.png";
+import press from "src/assets/images/press.png";
+import check from "src/assets/icon-check.svg";
+import { useRouter } from "next/navigation";
+import { useAtom } from "jotai";
+import { selectedImageAtom, isLoadingAtom, updatePassbookDataAtom } from "src/_store/passbookAtoms";
+import x from "src/assets/icon-x.svg";
+import { startPaymentVerification } from "src/_api/api";
+import { useMutation } from "@tanstack/react-query";
+import { VerificationRequest } from "src/_types/type";
+import { useEffect, useState } from "react";
 
 const PassbookVerifiPage = () => {
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useAtom(selectedImageAtom as any);
   const [isLoading, setIsLoading] = useAtom(isLoadingAtom);
   const [, updatePassbookData] = useAtom(updatePassbookDataAtom);
+  const [request, setRequest] = useState<{
+    bank: "KAKAO_BANK" | "SHINHAN" | "WOORI" | "KB" | "NH" | "HANA" | "IBK" | "TOSS_BANK";
+    imgFile: File | null;
+  }>({
+    bank: "KAKAO_BANK",
+    imgFile: null,
+  });
+
+  const { mutate: mutatePaymentVerification } = useMutation({
+    mutationFn: () => {
+      return startPaymentVerification("KAKAO_BANK", selectedImage as any);
+    },
+  });
 
   const handleImageUpload = async (event: any) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = async (e: any) => {
-        const imageDataURL = e?.target?.result;
-        setSelectedImage(imageDataURL);
-
-        // OCR 분석 결과 (목데이터)
-        const ocrResult = {
-          accountNumber: '123-456-7890', // 가짜 계좌번호
-          bankBalance: '50000',
-          transactionDate: '2024-03-12T14:30:00', // 가짜 거래일시
-          transactionAmount: '150000', // 가짜 거래금액
-          senderName: '홍길동', // 가짜 보낸 사람 이름
-          highlightBoxes: [
-            { x: 50, y: 100, width: 200, height: 30 }, // 가짜 위치 정보
-            { x: 100, y: 150, width: 150, height: 25 },
-          ],
-        };
-
-        // 이미지 데이터와 OCR 결과를 Jotai store에 저장
-        updatePassbookData({ imageDataURL, ocrResult });
+        setSelectedImage(e.target.result);
+        // mutatePaymentVerification();
       };
       reader.readAsDataURL(file);
-
-      // 업로드 후 API 요청을 보냄
-      setIsLoading(true);
-      try {
-        // API 요청 (예시)
-        // const formData = new FormData();
-        // formData.append('image', file);
-        // const response = await fetch('/api/upload-passbook', {
-        //   method: 'POST',
-        //   body: formData,
-        // });
-        // const data = await response.json();
-        // if (data.success) {
-        //   updatePassbookData({
-        //     imageDataURL,
-        //     ocrResult: {
-        //       accountNumber: data.accountNumber,
-        //       bankBalance: data.balance,
-        //       transactionDate: data.transactionDate,
-        //       transactionAmount: data.transactionAmount,
-        //       senderName: data.senderName,
-        //       highlightBoxes: data.highlightBoxes
-        //     }
-        //   });
-        // } else {
-        //   alert('통장 인증 실패');
-        // }
-
-        router.push('/passbook-verif/screen');
-      } catch (error) {
-        console.error('Error uploading passbook image:', error);
-        alert('통장 인증에 실패했습니다. 다시 시도해주세요.');
-      } finally {
-        setIsLoading(false);
-      }
     }
   };
 
+  useEffect(() => {
+    if (selectedImage) {
+      console.log(selectedImage);
+      mutatePaymentVerification();
+    }
+  }, [selectedImage]);
+
+  //       router.push("/passbook-verif/screen");
+  //     } catch (error) {
+  //       console.error("Error uploading passbook image:", error);
+  //       alert("통장 인증에 실패했습니다. 다시 시도해주세요.");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   }
+  // };
+
   return (
     <div className="w-full mx-auto flex flex-col items-center h-screen min-h-screen">
-      <div className='h-[50px] py-[5px] w-full flex items-center pl-[9px] bg-gray-0 mb-4'>
-        <button onClick={() => router.push('/verif')} className='z-10'>
+      <div className="h-[50px] py-[5px] w-full flex items-center pl-[9px] bg-gray-0 mb-4">
+        <button onClick={() => router.push("/verif")} className="z-10">
           <Image src={x} alt="" />
         </button>
-        <p className='title-sm text-gray-80 text-center w-full ml-[-36px]'>저축 인증하기</p>
+        <p className="title-sm text-gray-80 text-center w-full ml-[-36px]">저축 인증하기</p>
       </div>
       <div className="bg-gray-5 border border-gray-20 rounded-[16px] w-[320px] h-[280px] flex flex-col items-center justify-center mx-[20px]">
         {selectedImage ? (

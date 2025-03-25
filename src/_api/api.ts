@@ -116,12 +116,24 @@ export const getLeague = (id: number) =>
 export const getOpenLeagues = () =>
   api.get<LeagueResponse[]>("/leagues/open").then((res) => res.data);
 
-// Verification APIs
-export const startAccountVerification = (data: FormData) =>
-  api.post("/verification/account/start", data);
+// interface VerificationRequest {
+//   bank: SavingsBank;
+// }
+// // Verification APIs
+// - **Multipart Form Data**
+// - `request`: `VerificationRequest` JSON
+// - `imgFile`: `MultipartFile` (이미지 파일)
+type BankType = "KAKAO_BANK" | "SHINHAN" | "WOORI" | "KB" | "NH" | "HANA" | "IBK" | "TOSS_BANK";
 
-export const startPaymentVerification = (data: FormData) =>
-  api.post("/verification/payment/start", data);
+export const startAccountVerification = (request: BankType, imgFile: FormData) =>
+  api.post("/verification/account/start", { request, imgFile });
+
+export const startPaymentVerification = (bank: BankType, imgFile: File) => {
+  const formData = new FormData();
+  formData.append("imgFile", imgFile);
+  formData.append("request", JSON.stringify({ bank }));
+  return api.post("/verification/payment/start", formData);
+};
 
 export const getAccountVerificationStatus = (verificationId: string) =>
   api

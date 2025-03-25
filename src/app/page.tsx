@@ -95,7 +95,7 @@ export default function Home() {
   console.log("match", match);
 
   return (
-    <div className="flex flex-col bg-gray-5 min-h-screen">
+    <div className="flex flex-col bg-gray-5 min-h-screen pb-20">
       <div className="pt-5 pb-3 border-b bg-white px-5">
         <LogoIcon />
       </div>

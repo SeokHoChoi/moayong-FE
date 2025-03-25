@@ -18,7 +18,7 @@ function WithdrawPage() {
     setShowPopup(true);
   };
 
-  // TODO:
+  // TODO:구현
   // const { mutate: mutateWithdraw } = useMutation({
   //   mutationFn: () => {
   //     return withdraw();
